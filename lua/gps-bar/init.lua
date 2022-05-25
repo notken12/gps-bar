@@ -1,48 +1,4 @@
 local M = {}
-local api = vim.api
-
-M.show_popup = function(title, body)
-	local longest_line = 0
-	for _, line in ipairs(body) do
-		local line_length = string.len(line)
-		if line_length > longest_line then
-			longest_line = line_length
-		end
-	end
-
-	-- local width = math.min(longest_line, math.floor(0.9 * vim.o.columns))
-	local width = vim.o.columns - 2
-	local height = #body + 2
-	local x = (vim.o.columns - width) / 2.0
-	local y = (vim.o.lines - height) / 2.0
-	local y = 1
-	local pad_width = math.max(math.floor((width - string.len(title)) / 2.0), 0)
-
-	local buf = api.nvim_create_buf(false, true)
-
-	local lines = vim.list_extend({
-		string.rep(" ", pad_width) .. title .. string.rep(" ", pad_width),
-		"",
-	}, body)
-
-	api.nvim_buf_set_lines(buf, 0, -1, true, lines)
-	api.nvim_buf_set_option(buf, "modifiable", false)
-
-	local opts = {
-		relative = "editor",
-		width = width,
-		height = height,
-		col = x,
-		row = y,
-		focusable = true,
-		style = "minimal",
-		border = "rounded",
-		noautocmd = true,
-	}
-
-	local win = api.nvim_open_win(buf, false, opts)
-	api.nvim_set_current_win(win)
-end
 
 M.nvim_gps_output = function()
 	local present, gps = pcall(require, "nvim-gps")
