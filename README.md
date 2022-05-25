@@ -2,6 +2,8 @@
 
 A Neovim plugin that shows the file name and nvim-gps on Neovim 0.8's new 'winbar' feature. Helps you see each buffer's file name and where you are in the code. 
 
+![Showcase](screenshot.png)
+
 ## Requirements
 
 - Neovim 0.8 nightly

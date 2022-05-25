@@ -65,12 +65,6 @@ M.icon_highlights = {
 }
 
 M.set_winbar = function()
-	vim.api.nvim_create_autocmd("BufRead", {
-		callback = function()
-			vim.cmd([[:highlight! WinBar guifg=#bbbbbb]])
-		end,
-	})
-
 	vim.opt.winbar = "%{%v:lua.require'gps-bar'.get_winbar_text()%}"
 end
 
