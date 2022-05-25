@@ -15,9 +15,9 @@ Use your favorite Neovim package manager:
 
 ```lua
 -- Lua
-use ({
-	"SmiteshP/nvim-gps",
-	requires = "nvim-treesitter/nvim-treesitter",
+use({
+  "SmiteshP/nvim-gps",
+  requires = "nvim-treesitter/nvim-treesitter",
   config = function ()
     require("nvim-gps").setup()
   end
