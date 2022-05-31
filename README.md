@@ -29,7 +29,10 @@ use({
   "notken12/gps-bar", 
   requires = {"nvim-web-devicons", "nvim-gps"},
   config = function () 
-    require("gps-bar").setup()
+    -- Default options
+    require("gps-bar").setup({
+      separator = " > "
+    })
   end
 })
 ```

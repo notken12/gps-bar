@@ -1,5 +1,12 @@
 local M = {}
 
+M.highlights = {
+	separator = "LineNr",
+	text = "TabLine",
+}
+
+M.separator = " > "
+
 M.nvim_gps_output = function()
 	local present, gps = pcall(require, "nvim-gps")
 	if not present then
@@ -10,7 +17,7 @@ M.nvim_gps_output = function()
 	if #data == 0 then
 		return ""
 	end
-	local output = M.apply_highlight("Normal", " > ")
+	local output = M.apply_highlight("GpsBarSeparator", M.separator)
 
 	local first = true
 
@@ -22,15 +29,24 @@ M.nvim_gps_output = function()
 		else
 			icon = M.apply_highlight("TSVariable", icon)
 		end
-		local item = icon .. M.apply_highlight("LineNr", value.text)
+		local item = icon .. M.apply_highlight("GpsBarText", value.text)
 		if not first then
-			item = M.apply_highlight("Normal", " > ") .. item
+			item = M.apply_highlight("GpsBarSeparator", M.separator) .. item
 		end
 		output = output .. item
 		first = false
 	end
 
 	return output
+end
+
+M.set_winbar_highlight = function()
+	local text_hl = vim.api.nvim_get_hl_by_name(M.highlights.text, true)
+	local text_fg = string.format("%x", text_hl.foreground)
+	vim.cmd([[highlight! GpsBarText guifg=#]] .. text_fg)
+	local separator_hl = vim.api.nvim_get_hl_by_name(M.highlights.separator, true)
+	local separator_fg = string.format("%x", separator_hl.foreground)
+	vim.cmd([[highlight! GpsBarSeparator guifg=#]] .. separator_fg)
 end
 
 M.get_winbar_text = function()
@@ -42,13 +58,13 @@ M.get_winbar_text = function()
 		local ft = vim.bo.filetype
 		local nvw_icon, color = nvim_web_devicons.get_icon_color_by_filetype(ft)
 		if color ~= nil then
-			vim.cmd([[highlight! WinBarFileIcon guifg=]] .. color)
-			icon = M.apply_highlight("WinBarFileIcon", nvw_icon)
+			vim.cmd([[highlight! GpsBarFileIcon guifg=]] .. color)
+			icon = M.apply_highlight("GpsBarFileIcon", nvw_icon)
 		else
 			icon = nvw_icon
 		end
 	end
-	filename = M.apply_highlight("LineNr", filename)
+	filename = M.apply_highlight("GpsBarText", filename)
 	vim.cmd([[let g:mogo_winbar_textoff = getwininfo(win_getid())[0].textoff]])
 	local gutter_width = vim.g.mogo_winbar_textoff or 0
 	local result = (icon or "") .. " " .. filename .. gps_output
@@ -72,7 +88,9 @@ M.apply_highlight = function(hlname, str)
 	return "%#" .. hlname .. "#" .. str
 end
 
-M.setup = function()
+M.setup = function(opts)
+	M = vim.tbl_deep_extend("force", M, opts or {})
+	M.set_winbar_highlight()
 	M.set_winbar()
 end
 
